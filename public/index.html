@@ -32,7 +32,28 @@
             <input id="phone-number" type="text" placeholder="+15552221234" />
             <button id="button-call" type="submit">Call</button>
           </form>
+
+          <!-- Conf Room -->
+          <form>
+            <label for="confRoom"
+              >Enter Conf room</label
+            >
+            <input id="confRoom" type="text" placeholder="Room 1234" value="Room 1234" />
+            <button id="button-conf" type="submit">Join Conf</button>
+          </form>
+
+          <!-- Join as Coach -->
+          <form>
+            <label for="callSid"
+              >Enter CallSid</label
+            >
+            <input id="callSid" type="text" placeholder="CA123123123" />
+            <button id="button-coach" type="submit">Coach</button>
+          </form>
+
+          <button id="button-mute" class="hide">Mute</button>
           <button id="button-hangup-outgoing" class="hide">Hang Up</button>
+          
           <div id="incoming-call" class="hide">
             <h2>Incoming Call Controls</h2>
             <p class="instructions">

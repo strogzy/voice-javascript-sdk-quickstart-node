@@ -5,6 +5,15 @@
   const inputVolumeBar = document.getElementById("input-volume");
   const volumeIndicators = document.getElementById("volume-indicators");
   const callButton = document.getElementById("button-call");
+  
+  const coachButton = document.getElementById("button-coach");
+  const callSidInput = document.getElementById("callSid");
+  
+  const confButton = document.getElementById("button-conf");
+  const confRoomInput = document.getElementById("confRoom");
+  
+  const buttonMute = document.getElementById("button-mute");
+
   const outgoingCallHangupButton = document.getElementById("button-hangup-outgoing");
   const callControlsDiv = document.getElementById("call-controls");
   const audioSelectionDiv = document.getElementById("output-selection");
@@ -37,6 +46,16 @@
   speakerDevices.addEventListener("change", updateOutputDevice);
   ringtoneDevices.addEventListener("change", updateRingtoneDevice);
   
+
+  coachButton.onclick = (e) => {
+    e.preventDefault();
+    makeCoachCall();
+  };
+
+  confButton.onclick = (e) => {
+    e.preventDefault();
+    joinConf();
+  };
 
   // SETUP STEP 1:
   // Browser client should be started after a user gesture
@@ -126,16 +145,94 @@
         call.disconnect();
       };
 
+      buttonMute.onclick = () => {
+        log("Going on mute ...", !call.isMuted());
+        call.mute(!call.isMuted());
+      };
+
     } else {
       log("Unable to make call.");
     }
   }
+
+    // MAKE AN OUTGOING CALL
+
+    async function makeCoachCall() {
+      var params = {
+        // get the phone number to call from the DOM
+        callSid: callSidInput.value,
+      };
+  
+      if (device) {
+        log(`Attempting to connect to ${params.callSid} ...`);
+  
+        // Twilio.Device.connect() returns a Call object
+        const call = await device.connect({ params });
+  
+        // add listeners to the Call
+        // "accepted" means the call has finished connecting and the state is now "open"
+        call.on("accept", updateUIAcceptedOutgoingCall);
+        call.on("disconnect", updateUIDisconnectedOutgoingCall);
+        call.on("cancel", updateUIDisconnectedOutgoingCall);
+        call.on("reject", updateUIDisconnectedOutgoingCall);
+  
+        outgoingCallHangupButton.onclick = () => {
+          log("Hanging up ...");
+          call.disconnect();
+        };
+
+        buttonMute.onclick = () => {
+          log("Going on mute ...", !call.isMuted());
+          call.mute(!call.isMuted());
+        };
+  
+      } else {
+        log("Unable to make call.");
+      }
+    }
+
+ // MAKE AN OUTGOING CALL
+
+ async function joinConf() {
+  var params = {
+    // get the phone number to call from the DOM
+    confRoom: confRoomInput.value,
+  };
+
+  if (device) {
+    log(`Attempting to join conf to ${params.confRoom} ...`);
+  
+    // Twilio.Device.connect() returns a Call object
+    const call = await device.connect({ params });
+
+    // add listeners to the Call
+    // "accepted" means the call has finished connecting and the state is now "open"
+    call.on("accept", updateUIAcceptedOutgoingCall);
+    call.on("disconnect", updateUIDisconnectedOutgoingCall);
+    call.on("cancel", updateUIDisconnectedOutgoingCall);
+    call.on("reject", updateUIDisconnectedOutgoingCall);
+
+    outgoingCallHangupButton.onclick = () => {
+      log("Hanging up ...");
+      call.disconnect();
+    };
+
+    buttonMute.onclick = () => {
+      log("Going on mute ", !call.isMuted());
+      call.mute(!call.isMuted());
+    };
+
+  } else {
+    log("Unable to make call.");
+  }
+}
 
   function updateUIAcceptedOutgoingCall(call) {
     log("Call in progress ...");
     callButton.disabled = true;
     outgoingCallHangupButton.classList.remove("hide");
     volumeIndicators.classList.remove("hide");
+    buttonMute.classList.remove("hide");
     bindVolumeIndicators(call);
   }
 
@@ -144,6 +241,7 @@
     callButton.disabled = false;
     outgoingCallHangupButton.classList.add("hide");
     volumeIndicators.classList.add("hide");
+    buttonMute.classList.add("hide");
   }
 
   // HANDLE INCOMING CALL

@@ -54,7 +54,24 @@ exports.voiceResponse = function voiceResponse(requestBody) {
       ? "number"
       : "client";
     dial[attr]({}, toNumberOrClientName);
-  } else {
+  } else if (requestBody.callSid){
+      const callSid = requestBody.callSid;
+      
+      const dial = twiml.dial();
+      dial.conference({
+        muted: false,
+        coach: callSid,
+    }, 'Room 1234');
+  } else if (requestBody.confRoom){
+      const confRoom = requestBody.confRoom;
+      
+      const dial = twiml.dial();
+      dial.conference({
+        muted: false, 
+    }, 'Room 1234');
+  }
+  
+  else {
     twiml.say("Thanks for calling!");
   }
 

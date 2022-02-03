@@ -8,6 +8,15 @@
 
 > This template is part of Twilio CodeExchange. If you encounter any issues with this code, please open an issue at [github.com/twilio-labs/code-exchange/issues](https://github.com/twilio-labs/code-exchange/issues).
 
+## Please note: this is a fork of the TwilioDevEd repo, it adds some functionality:
+- join a conference room from the client 
+- join a coaching session of an existing call (requires CallSid)
+
+original README below...
+
+--- 
+
+
 ## About
 
 This application should give you a ready-made starting point for writing your own voice apps with Twilio Voice JavaScript SDK 2.0 (Formerly known as Twilio Client). 
